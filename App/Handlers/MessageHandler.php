@@ -11,9 +11,9 @@ use SergiX44\Nutgram\Nutgram;
 
 class MessageHandler
 {
-    public static function register(Nutgram $bot, PDO $db)
+    public static function register(Nutgram $bot)
     {
-        $bot->onMessage(function (Nutgram $bot) use ($db) {
+        $bot->onMessage(function (Nutgram $bot) {
             if (!$bot->userId()) return;
 
             $screen = State::getScreen($bot);
@@ -43,21 +43,43 @@ class MessageHandler
         });
     }
 
-    public static function urlHandler(Nutgram $bot, string $text)
+    public static function urlHandler(Nutgram $bot, string $text): void
     {
         $pattern = '/(https?:\/\/(?:www\.)?(tiktok\.com|likee\.com|like\.com|pinterest\.com|instagram\.com|youtube\.com|youtu\.be)\/[^\s]+)/i';
 
-        return preg_replace_callback($pattern, function ($match) {
-            $url = $match[0];
-            $domain = strtolower($match[2]);
+        if (preg_match($pattern, $text, $matches)) {
+            $url = $matches[0];
+            $domain = strtolower($matches[2]);
 
             switch (true) {
                 case strpos($domain, 'youtube') !== false || strpos($domain, 'youtu.be') !== false:
                     YoutubeService::getVideoInfo($bot, $url);
+                    break;
+
+                case strpos($domain, 'tiktok') !== false:
+                    $bot->sendMessage("TikTok URL detected. This feature is coming soon.");
+                    break;
+
+                case strpos($domain, 'instagram') !== false:
+                    $bot->sendMessage("Instagram URL detected. This feature is coming soon.");
+                    break;
+
+                case strpos($domain, 'likee') !== false || strpos($domain, 'like.com') !== false:
+                    $bot->sendMessage("Likee URL detected. This feature is being fixed.");
+                    break;
+
+                case strpos($domain, 'pinterest') !== false:
+                    $bot->sendMessage("Pinterest URL detected. This feature is being fixed.");
+                    break;
 
                 default:
-                    return $url;
+                    $bot->sendMessage("Unsupported URL format. Please try a different link.");
+                    break;
             }
-        }, $text);
+        } else {
+            if (strlen($text) > 3) {
+                $bot->sendMessage("🔍 Qo'shiq qidirilmoqda...");
+            }
+        }
     }
 }
