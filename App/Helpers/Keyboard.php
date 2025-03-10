@@ -7,6 +7,7 @@ use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardButton;
 use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardMarkup;
 use SergiX44\Nutgram\Telegram\Types\Keyboard\KeyboardButton;
 use SergiX44\Nutgram\Telegram\Types\Keyboard\ReplyKeyboardMarkup;
+use SergiX44\Nutgram\Telegram\Types\Keyboard\ReplyKeyboardRemove;
 
 class Keyboard
 {
@@ -16,7 +17,7 @@ class Keyboard
         $keyboard->addRow(
             KeyboardButton::make(Button::ABOUT),
             KeyboardButton::make(Button::PREMIUM),
-            KeyboardButton::make(Button::TRENDING)
+            KeyboardButton::make(Button::GROUP)
         );
         if (Validator::isAdmin($bot)) {
             $keyboard->addRow(
@@ -30,8 +31,7 @@ class Keyboard
     {
         $keyboard = InlineKeyboardMarkup::make();
         $keyboard->addRow(
-            InlineKeyboardButton::make("Roziman"),
-            InlineKeyboardButton::make("Rozi emasman")
+            InlineKeyboardButton::make(Button::AGREE, callback_data: "agree"),
         );
         return $keyboard;
     }
@@ -40,9 +40,14 @@ class Keyboard
     {
         $keyboard = InlineKeyboardMarkup::make();
         $keyboard->addRow(
-            InlineKeyboardButton::make("Erkak", callback_data: "gender erkak"),
-            InlineKeyboardButton::make("Ayol", callback_data: "gender ayol")
+            InlineKeyboardButton::make(Button::MALE, callback_data: "gender male"),
+            InlineKeyboardButton::make(Button::FEMALE, callback_data: "gender female")
         );
         return $keyboard;
+    }
+
+    public static function RemoveKeyboard(): ReplyKeyboardRemove
+    {
+        return ReplyKeyboardRemove::make(remove_keyboard: true);
     }
 }

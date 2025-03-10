@@ -16,6 +16,7 @@ class Menu
     public static function showPrivacyMenu(Nutgram $bot)
     {
         State::setScreen($bot, State::PRIVACY);
+        self::sendMenu($bot, "🍿", Keyboard::RemoveKeyboard());
         self::sendMenu($bot, Message::PrivacyMenu(), Keyboard::PrivacyMenu());
     }
 
@@ -23,6 +24,21 @@ class Menu
     {
         State::setScreen($bot, State::GENDER);
         self::sendMenu($bot, Message::GenderMenu(), Keyboard::GenderMenu());
+    }
+
+    public static function showAboutMenu(Nutgram $bot)
+    {
+        self::sendMenu($bot, Message::AboutMenu(), Keyboard::MainMenu($bot));
+    }
+
+    public static function showPremiumMenu(Nutgram $bot)
+    {
+        self::sendMenu($bot, Message::PremiumMenu(), Keyboard::MainMenu($bot));
+    }
+
+    public static function showGroupMenu(Nutgram $bot)
+    {
+        self::sendMenu($bot, Message::GroupMenu(), Keyboard::MainMenu($bot));
     }
 
     public static function sendMenu(Nutgram $bot, $text, $keyboard = null)
